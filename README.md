@@ -1,2 +1,2 @@
-# 50_projects
-50 Different small projects made with HTML,CSS and Javascript
+# Web Dev Exercises
+small projects made with HTML Sass and Javascript, with the intention to learn new concepts and apply them to more complex projects
