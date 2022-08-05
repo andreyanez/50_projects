@@ -5,7 +5,59 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="stylesheet" href="css/style.css" />
-		<title>Document</title>
+		<title></title>
 	</head>
-	<body></body>
+	<body>
+		<main>
+			<h1 id="movieTitle"></h1>
+			<div class="container">
+				<div class="container__img">
+					<img id="movieImg" src="" alt="" />
+				</div>
+				<div class="container_info">
+					<div class="container__overview" id="overview"></div>
+				</div>
+			</div>
+		</main>
+	</body>
+	<script>
+		const IMG_PATH = 'https://image.tmdb.org/t/p/w1280';
+
+		const params = new Proxy(new URLSearchParams(window.location.search), {
+			get: (searchParams, prop) => searchParams.get(prop),
+		});
+		let value = params.id;
+
+		getMovie();
+
+		async function getMovie() {
+			const res = await fetch(
+				`https://api.themoviedb.org/3/movie/${value}?api_key=3fd2be6f0c70a2a598f084ddfb75487c&append_to_response=videos,images`
+			);
+			const data = await res.json();
+			showMovie(data);
+		}
+
+		const showMovie = movieData => {
+			const {
+				id: movieId,
+				title,
+				poster_path: poster_url,
+				vote_average,
+				overview,
+			} = movieData;
+
+			const pageTitle = document.getElementsByTagName('title')[0];
+			pageTitle.innerText = title;
+
+			const movieTitle = document.getElementById('movieTitle');
+			movieTitle.innerText = title;
+
+			const movieImg = document.getElementById('movieImg');
+			movieImg.setAttribute('src', `${IMG_PATH + poster_url}`);
+
+			const movieOverview = document.getElementById('overview');
+			movieOverview.innerText = overview;
+		};
+	</script>
 </html>

@@ -107,4 +107,31 @@ main {
 
 .movie:hover .overview {
   transform: translateY(0);
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+.container__img {
+  flex-basis: 40%;
+}
+.container__img img {
+  width: 100%;
+}
+
+.container_info {
+  flex-basis: 40%;
+  color: #fff;
+}
+
+#movieTitle {
+  color: #fff;
+  text-align: center;
+  display: block;
+  width: 100%;
+  text-transform: uppercase;
 }/*# sourceMappingURL=style.css.map */
