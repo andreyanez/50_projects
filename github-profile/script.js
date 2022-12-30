@@ -20,11 +20,20 @@ async function getUser(username) {
 		const { data } = await axios(`${APIURL}${username}`);
 
 		createUserCard(data);
-		// getRepos(username)
 	} catch (err) {
 		if (err.response.status == 404) {
 			createErrorCard('No profile with this username');
 		}
+	}
+}
+
+async function getRepos(username) {
+	try {
+		const { data } = await axios(APIURL + username + '/repos?sort=created');
+
+		return data;
+	} catch (err) {
+		createErrorCard('Problem fetching repos');
 	}
 }
 
@@ -38,9 +47,12 @@ form.addEventListener('submit', e => {
 	search.value = '';
 });
 
-function createUserCard(user) {
+async function createUserCard(user) {
 	const userID = user.name || user.login;
 	const userBio = user.bio ? `<p>${user.bio}</p>` : '';
+
+	const repos = await getRepos(user.login);
+	const repoList = await addReposToCard(repos);
 
 	const cardHTML = `
     <div class="card">
@@ -55,7 +67,7 @@ function createUserCard(user) {
         <li>${user.following} <strong>Following</strong></li>
         <li>${user.public_repos} <strong>Repos</strong></li>
       </ul>
-      <div id="repos"></div>
+      ${repoList}
     </div>
   </div>
     `;
@@ -64,13 +76,27 @@ function createUserCard(user) {
 	img.addEventListener('load', function () {
 		const pallete = colorThief.getColor(img);
 		const imgEl = document.querySelector('.card');
-		console.log(imgEl.style);
 		imgEl.style.backgroundColor = rgbToHex(pallete[0], pallete[1], pallete[2]);
 	});
 	img.crossOrigin = 'Anonymous';
 	img.src = user.avatar_url;
 
 	main.innerHTML = cardHTML;
+}
+
+async function addReposToCard(repos) {
+	const reposEl = document.createElement('ul');
+	repos.slice(0, 5).forEach(repo => {
+		const repoEl = document.createElement('a');
+		repoEl.classList.add('repo');
+		repoEl.href = repo.html_url;
+		repoEl.target = '_blank';
+		repoEl.innerText = repo.name;
+
+		reposEl.appendChild(repoEl);
+	});
+
+	return reposEl;
 }
 
 function createErrorCard(msg) {
